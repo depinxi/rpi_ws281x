@@ -1151,6 +1151,10 @@ ws2811_return_t  ws2811_render(ws2811_t *ws2811)
     for (chan = 0; chan < RPI_PWM_CHANNELS; chan++)         // Channel
     {
         ws2811_channel_t *channel = &ws2811->channel[chan];
+        if (channel->count == 0)
+        {
+            continue;
+        }
 
         int wordpos = chan; // PWM & PCM
         int bytepos = 0;    // SPI
