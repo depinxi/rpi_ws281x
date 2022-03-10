@@ -43,6 +43,8 @@ set(TEST_SOURCES
     main.c
 )
 
+include(GNUInstallDirs)
+
 configure_file(version.h.in version.h)
 
 configure_file(
@@ -69,8 +71,15 @@ install(TARGETS ${LIB_TARGET}
     PUBLIC_HEADER DESTINATION ${DEST_HEADERS_DIR}
 )
 
-INSTALL(FILES "${CMAKE_BINARY_DIR}/libws2811.pc"
+INSTALL(FILES "${CMAKE_CURRENT_BINARY_DIR}/libws2811.pc"
         DESTINATION lib/pkgconfig)
+
+install(CODE "execute_process(COMMAND /sbin/ldconfig
+                              RESULT_VARIABLE EXIT_STATUS
+                              ERROR_QUIET)
+             if (NOT EXIT_STATUS EQUAL 0)
+                 message(\"Warning: Could not run ldconfig. You may need to manually run ldconfig as root to cache the newly installed libraries.\")
+             endif()")
 
 if(BUILD_TEST)
     include_directories(${CMAKE_CURRENT_BINARY_DIR})
